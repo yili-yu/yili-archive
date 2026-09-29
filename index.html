@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>yili archive</title>
+  <link rel="icon" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/assets/style.css">
+  <script defer src="/assets/app.js"></script>
+</head>
+<body>
+  <noscript><div class="noscript">此档案站需要 JavaScript 才能解锁密库。</div></noscript>
+
+  <main id="gate" class="gate" aria-labelledby="gate-title">
+    <section class="gate-card">
+      <div class="gate-brand" aria-hidden="true">y</div>
+      <p class="eyebrow">Private archive</p>
+      <h1 id="gate-title">私人档案</h1>
+      <p id="gate-copy" class="gate-copy">正在检查密库……</p>
+
+      <form id="gate-form" class="stack" hidden>
+        <label>
+          <span>密码</span>
+          <input id="gate-password" name="password" type="password" autocomplete="current-password" required minlength="8">
+        </label>
+        <label id="confirm-row" hidden>
+          <span>确认密码</span>
+          <input id="gate-confirm" name="confirm" type="password" autocomplete="new-password" minlength="8">
+        </label>
+        <p id="gate-error" class="form-error" role="alert"></p>
+        <button id="gate-submit" class="primary-button" type="submit">解锁</button>
+      </form>
+
+      <div class="gate-actions">
+        <button id="gate-import" class="quiet-button" type="button">导入密库</button>
+        <span>内容不会自动上传</span>
+      </div>
+      <input id="vault-file-input" type="file" accept="application/json,.json" hidden>
+    </section>
+  </main>
+
+  <div id="app" class="app" hidden>
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">y</span>
+        <div><strong>yili archive</strong><small>私人认知档案</small></div>
+      </div>
+
+      <nav class="side-nav" aria-label="档案导航">
+        <button class="nav-item is-active" data-view="home" type="button"><span>⌂</span>总览</button>
+        <button class="nav-item" data-view="timeline" type="button"><span>◷</span>时间线</button>
+        <button class="nav-item" data-view="records" type="button"><span>▤</span>全部记录</button>
+        <button class="nav-item" data-view="groups" type="button"><span>⌘</span>问题组</button>
+        <button class="nav-item" data-view="settings" type="button"><span>⚙</span>设置</button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <p><span class="status-dot"></span>密库已解锁</p>
+        <button id="lock-button" class="quiet-button full" type="button">锁定</button>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button id="menu-button" class="icon-button menu-button" type="button" aria-label="展开导航">☰</button>
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="global-search" type="search" placeholder="搜索标题、正文、问题组或路径" autocomplete="off">
+        </label>
+        <button id="new-record-button" class="primary-button compact" type="button">＋ 新建记录</button>
+      </header>
+      <main id="view" class="view" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <dialog id="record-dialog" class="dialog">
+    <form id="record-form" method="dialog">
+      <div class="dialog-head">
+        <div><p class="eyebrow">Archive record</p><h2 id="record-dialog-title">新建记录</h2></div>
+        <button class="icon-button" value="cancel" formmethod="dialog" aria-label="关闭">×</button>
+      </div>
+      <input id="record-id" type="hidden">
+      <div class="form-grid">
+        <label class="wide"><span>标题</span><input id="record-title" required maxlength="160"></label>
+        <label><span>类型</span><select id="record-type"><option value="chat">AI 会话</option><option value="diary">日记说明</option><option value="document">资料文件</option><option value="note">研究札记</option><option value="other">其他</option></select></label>
+        <label><span>发生／形成时间</span><input id="record-date" type="datetime-local" required></label>
+        <label class="wide"><span>简短说明</span><textarea id="record-summary" rows="2" maxlength="500"></textarea></label>
+        <label class="wide"><span>正文或会话内容</span><textarea id="record-body" rows="9"></textarea></label>
+        <fieldset class="wide"><legend>问题组</legend><div id="record-groups" class="check-grid"></div></fieldset>
+        <label><span>在线文件链接（可选）</span><input id="record-url" type="text" placeholder="/files/example.pdf 或 https://…"></label>
+        <label><span>文件显示名称</span><input id="record-file-name" type="text" placeholder="论文 PDF"></label>
+        <label class="wide"><span>本地文件路径（可选）</span><input id="record-local-path" type="text" placeholder="E:\资料\文件.docx"></label>
+        <label class="wide"><span>关联记录 ID（逗号分隔）</span><input id="record-related" type="text" placeholder="chat-… , document-…"></label>
+      </div>
+      <div class="dialog-actions">
+        <button class="quiet-button" value="cancel" formmethod="dialog">取消</button>
+        <button class="primary-button" type="submit">保存记录</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="group-dialog" class="dialog small-dialog">
+    <form id="group-form" method="dialog">
+      <div class="dialog-head">
+        <div><p class="eyebrow">Problem group</p><h2 id="group-dialog-title">新建问题组</h2></div>
+        <button class="icon-button" value="cancel" formmethod="dialog" aria-label="关闭">×</button>
+      </div>
+      <input id="group-id" type="hidden">
+      <div class="stack">
+        <label><span>名称</span><input id="group-name" required maxlength="80"></label>
+        <label><span>说明</span><textarea id="group-description" rows="4" maxlength="500"></textarea></label>
+        <label><span>标识色</span><input id="group-color" type="color" value="#456f61"></label>
+      </div>
+      <div class="dialog-actions split-actions">
+        <button id="delete-group-button" class="danger-button" type="button" hidden>删除</button>
+        <span></span>
+        <button class="quiet-button" value="cancel" formmethod="dialog">取消</button>
+        <button class="primary-button" type="submit">保存问题组</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
+
